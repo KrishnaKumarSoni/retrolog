@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RetroLog Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="../icons/icon16.png">
+</head>
+<body>
+  <div class="header">
+    <img src="../icons/icon48.png" alt="RetroLog" class="logo">
+    <h1>RetroLog Dashboard</h1>
+  </div>
+  <div class="app-container">
+    <header>
+      <h1>RetroLog Dashboard</h1>
+      <div class="header-actions">
+        <button id="settingsButton">Settings</button>
+        <button id="resetButton" class="danger">Reset Data</button>
+      </div>
+    </header>
+
+    <div class="summary-section">
+      <div class="karma-stats">
+        <div class="stat-card">
+          <h3>Today</h3>
+          <div id="todayKarma">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>This Week</h3>
+          <div id="weekKarma">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>This Month</h3>
+          <div id="monthKarma">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-section">
+      <h2>Activity</h2>
+      <div id="activityGraph"></div>
+    </div>
+
+    <div class="log-section">
+      <div class="log-header">
+        <h2>Activity Log</h2>
+        <div class="log-controls">
+          <div class="view-toggle">
+            <button id="condensedView" class="toggle-button active">Condensed</button>
+            <button id="expandedView" class="toggle-button">Expanded</button>
+          </div>
+          <select id="sortOrder" class="sort-select">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
+      </div>
+      <div id="timeline" class="condensed"></div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-content">
+      <h2>Settings</h2>
+      <div class="setting-item">
+        <label for="karmaTarget">Daily Karma Target</label>
+        <input type="number" id="karmaTarget" min="1" max="50" value="5">
+      </div>
+      <div class="setting-item">
+        <label class="checkbox-label">
+          <input type="checkbox" id="autoLogging" checked>
+          Enable auto-logging
+        </label>
+      </div>
+      <div class="setting-item timer-setting">
+        <label for="timerLength">Auto-logging Interval (minutes)</label>
+        <div class="timer-input-group">
+          <input type="number" id="timerLength" min="1" max="120" value="30">
+          <button id="saveTimer" class="small-button">Save</button>
+        </div>
+        <div class="next-snapshot" id="nextSnapshot">Next snapshot in: --:--</div>
+      </div>
+      <div class="modal-actions">
+        <button id="saveSettings">Save</button>
+        <button id="closeSettings">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html> 

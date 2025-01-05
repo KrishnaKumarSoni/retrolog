@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RetroLog</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <img src="icons/icon48.png" alt="RetroLog" class="logo">
+    <h1>RetroLog</h1>
+  </div>
+  <div class="container">
+    <div class="karma-section">
+      <div class="karma-count">
+        <span id="current-karma">0</span>/<span id="karma-target">5</span>
+        <div class="karma-label">Today's Karma</div>
+      </div>
+      <div class="progress-bar">
+        <div id="progress-fill"></div>
+      </div>
+      <div class="next-snapshot" id="next-snapshot">Next snapshot in: 30:00</div>
+    </div>
+    
+    <div class="input-section">
+      <input type="text" id="task-input" placeholder="What did you just accomplish?" maxlength="100">
+      <button id="log-button">Log</button>
+    </div>
+
+    <div class="footer">
+      <button id="open-webapp" class="secondary-button">View Retros</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 
