@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Log } from '@/shared/types';
 import { useLogs } from '@/shared/hooks/useLogs';
+import { Log } from '@/shared/types';
 
 export function Timeline() {
   const { logs, updateLogDescription, deleteLog } = useLogs();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editText, setEditText] = useState('');
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleEdit = (log: Log) => {
     setEditingId(log.id!);
@@ -13,13 +14,28 @@ export function Timeline() {
   };
 
   const handleSave = async (id: number) => {
-    await updateLogDescription(id, editText.trim());
-    setEditingId(null);
-    setEditText('');
+    try {
+      await updateLogDescription(id, editText.trim());
+      setEditingId(null);
+      setEditText('');
+    } catch (error) {
+      console.error('Error updating log:', error);
+    }
   };
 
-  const handleDelete = async (id: number) => {
-    await deleteLog(id);
+  const handleDelete = async (log: Log) => {
+    if (typeof log.id !== 'number') {
+      setDeleteError('Invalid log ID');
+      return;
+    }
+
+    try {
+      setDeleteError(null);
+      await deleteLog(log.id);
+    } catch (error) {
+      console.error('Error deleting log:', error);
+      setDeleteError('Failed to delete log');
+    }
   };
 
   const groupedLogs = logs.reduce((groups, log) => {
@@ -33,6 +49,11 @@ export function Timeline() {
 
   return (
     <div className="space-y-8">
+      {deleteError && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {deleteError}
+        </div>
+      )}
       {Object.entries(groupedLogs).map(([date, logs]) => (
         <div key={date} className="space-y-4">
           <h2 className="text-lg font-semibold">{date}</h2>
@@ -77,7 +98,7 @@ export function Timeline() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(log.id!)}
+                            onClick={() => handleDelete(log)}
                             className="ml-2 text-sm text-gray-500 hover:text-red-600"
                           >
                             Delete
@@ -85,31 +106,33 @@ export function Timeline() {
                         </div>
                       </div>
                     )}
-                    {log.isAutoLog && (
-                      <span className="inline-block mt-1 px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded">
-                        automatic log
-                      </span>
+                    <div className="mt-2 text-sm text-gray-500">
+                      <span>{new Date(log.timestamp).toLocaleTimeString()}</span>
+                      {log.isAutoLog && (
+                        <span className="ml-2 bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs">
+                          Automatic Log
+                        </span>
+                      )}
+                    </div>
+                    {log.url && (
+                      <a
+                        href={log.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 block text-sm text-gray-600 hover:text-black"
+                      >
+                        {log.title || log.url}
+                      </a>
+                    )}
+                    {log.screenshot && (
+                      <img
+                        src={log.screenshot}
+                        alt="Screenshot"
+                        className="mt-2 max-w-full h-auto rounded"
+                      />
                     )}
                   </div>
                 </div>
-                <div className="mt-2 flex items-center justify-between text-sm text-gray-500">
-                  <span>{new Date(log.timestamp).toLocaleTimeString()}</span>
-                  <a
-                    href={log.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-gray-700"
-                  >
-                    {log.title}
-                  </a>
-                </div>
-                {log.screenshot && (
-                  <img
-                    src={log.screenshot}
-                    alt="Screenshot"
-                    className="mt-4 w-full h-auto rounded border border-gray-200"
-                  />
-                )}
               </div>
             ))}
           </div>

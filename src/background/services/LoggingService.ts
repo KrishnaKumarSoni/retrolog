@@ -71,8 +71,18 @@ export class LoggingService {
   }
 
   async deleteLog(id: number): Promise<void> {
-    await db.logs.delete(id);
-    await this.updateKarmaPoints();
+    try {
+      const log = await db.logs.get(id);
+      if (!log) {
+        throw new Error(`Log with ID ${id} not found`);
+      }
+      
+      await db.logs.delete(id);
+      await this.updateKarmaPoints();
+    } catch (error) {
+      console.error('Error deleting log:', error);
+      throw error;
+    }
   }
 
   private async captureScreenshot(): Promise<string | undefined> {
